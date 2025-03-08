@@ -47,7 +47,7 @@ const PlaceOrder = () => {
     };
 
     try {
-      const response = await axios.post('http://localhost:3000/api/orders', orderData, {
+      const response = await axios.post('http://localhost:3000/api/orders/new', orderData, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -57,6 +57,7 @@ const PlaceOrder = () => {
         console.log('Order placed successfully:', response.data);
 
         // Clear cart after order is successfully placed
+
         // Optionally, redirect to a confirmation page or show success message
         alert('Order placed successfully!');
       } else {

@@ -25,6 +25,18 @@ export const createOrder = async (req, res) => {
   }
 };
 
+export const getAllOrders = async (req, res) => {
+  try {
+    const Orders = await Order.find({});
+    return res.status(200).json({
+      count: Orders.length,
+      data: Orders
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send({ message: error.message });
+  }
+};
 
 export const getUserOrders = async (req, res) => {
   try {
@@ -38,13 +50,19 @@ export const getUserOrders = async (req, res) => {
 
 export const getOrderById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: "Invalid order ID" });
+    }
+
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ message: "Order not found" });
+
     res.json(order);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 export const updateOrderStatus = async (req, res) => {
   try {
@@ -110,7 +128,7 @@ export const getOrderStats = async (req, res) => {
   try {
     const userId = new mongoose.Types.ObjectId(req.params.userId);
     const stats = await Order.aggregate([
-      { $match: { userId } },
+      { $match: { userId: userId } }, // Ensure it's an ObjectId
       {
         $group: {
           _id: null,
