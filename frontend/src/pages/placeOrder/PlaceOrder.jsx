@@ -4,7 +4,7 @@ import axios from 'axios';
 import './PlaceOrder.css';
 
 const PlaceOrder = () => {
-  const { cartItems, getTotalCartAmount, clearCart } = useContext(StoreContext);
+  const { cartItems, getTotalCartAmount, clearCart, products } = useContext(StoreContext);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -38,14 +38,18 @@ const PlaceOrder = () => {
       country: formData.country,
       zipCode: formData.zipCode,
       paymentMethod: formData.paymentMethod,
-      items: Object.values(cartItems).map(item => ({
-        productId: item.id,  // Assuming your cart items have an `id`
-        name: item.name,
-        price: item.price,
-        quantity: item.quantity
-      })),
+      items: Object.keys(cartItems).map(itemId => {
+        const itemInfo = products.find(product => product._id === itemId);
+        return {
+          productId: itemId,
+          name: itemInfo.name,
+          price: itemInfo.price,
+          quantity: cartItems[itemId]
+        };
+      }),
       totalAmount: total,
     };
+
 
     try {
       const response = await axios.post('http://localhost:3000/api/orders/new', orderData, {
