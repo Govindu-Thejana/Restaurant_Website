@@ -1,41 +1,31 @@
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({
-    productId : {
-        type : String,
-        required : true,
-        unique : true
+    productId: {
+        type: String,
+        required: true
     },
-    name : {
-        type : String,
-        required : true
+    name: {
+        type: String,
+        required: true
     },
-    altNames : {
-        type : [String],
-        default : []
+    description: {
+        type: String,
+        required: true
     },
-    price : {
-        type : Number,
-        required : true
+    price: {
+        type: Number,
+        required: true
     },
-    labeledPrice : {
-        type : Number,
-        required : true
+    category: {
+        type: String,
+        required: true
     },
-    description : {
-        type : String,
-        required : true
-    },
-    images : {
-        type : [String],
-        required : true,
-        default : ["https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyrVHW3ETfRAAtf780OQqLRYM6inchgfNgQg&s"]
-    },
-    stock : {
-        type : Number,
-        required : true
-    },
-})
+    image: {
+        type: String,
+        required: true
+    }
+}, { timestamps: true }); // Automatically adds createdAt and updatedAt fields
 
-const Product = mongoose.model("products",productSchema)
+const Product = mongoose.model("products", productSchema);
 export default Product;
