@@ -35,6 +35,7 @@ const PlaceOrder = () => {
       email: formData.email,
       street: formData.street,
       city: formData.city,
+      country: formData.country,
       zipCode: formData.zipCode,
       paymentMethod: formData.paymentMethod,
       items: Object.values(cartItems).map(item => ({

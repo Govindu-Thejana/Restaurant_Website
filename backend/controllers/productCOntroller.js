@@ -1,111 +1,107 @@
-import Product from "../models/product.js";
+import Product from '../models/product.js';
+import multer from 'multer';
+import { v4 as uuidv4 } from 'uuid';
 
-export function createProduct(req,res){
-    if(req.user == null){
-        res.status(403).json({
-            message : "You need to login first"
-        })
-        return;
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './uploads');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
     }
+});
 
-    if(req.user.role != "admin"){
-        res.status(403).json({
-            message : "You are not authorized to create a product"
-        })
-        return;
+const upload = multer({ storage: storage });
+
+// Create a new product
+export const createProduct = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'Image file is required' });
+        }
+        const productId = uuidv4();
+        console.log(productId);
+        const product = new Product({
+            productId,
+            name: req.body.name,
+            description: req.body.description,
+            price: req.body.price,
+            category: req.body.category,
+            image: req.file.filename
+        });
+
+        await product.save();
+        res.status(201).json({ success: true, message: 'Product created successfully', product });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Failed to create product' });
     }
+};
 
-    const product = new Product(req.body);
-
-    product.save().then(
-        ()=>{
-            res.json({
-                message : "Product saved successfully"
-            })
-        }
-    ).catch(
-        (err)=>{
-            res.status(500).json({
-                message : "Product not saved"
-            })
-        }
-    )
-}
-
-export function getProducts(req,res){
-    Product.find().then(
-        (products)=>{
-            res.json(products)
-        }
-    ).catch(
-        (err)=>{
-            res.status(500).json({
-                message : "Products not found"
-            })
-        }
-    )
-}
-
-export function deleteProduct(req,res){
-    if(req.user == null){
-        res.status(403).json({
-            message : "You need to login first"
-        })
-        return;
+// Get all products
+export const getAllProducts = async (req, res) => {
+    try {
+        const products = await Product.find();
+        res.status(200).json({ success: true, products });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Failed to fetch products' });
     }
+};
 
-    if(req.user.role != "admin"){
-        res.status(403).json({
-            message : "You are not authorized to delete a product"
-        })
-        return;
+// Get a product by ID
+export const getProductById = async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+        res.status(200).json({ success: true, product });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Failed to fetch product' });
     }
+};
 
-    Product.findOneAndDelete({
-        productId : req.params.productId
-    }).then(
-        ()=>{
-            res.json({
-                message : "Product deleted successfully"
-            })
+// Update a product
+export const updateProduct = async (req, res) => {
+    try {
+        const updatedData = { ...req.body };
+        if (req.file) {
+            updatedData.image = req.file.filename;
         }
-    ).catch(
-        (err)=>{
-            res.status(500).json({
-                message : "Product not deleted"
-            })
-        }
-    )
-}
 
-export function updateProduct(req,res){
-    if(req.user == null){
-        res.status(403).json({
-            message : "You need to login first"
-        })
-        return;
+        const product = await Product.findByIdAndUpdate(req.params.productId, updatedData, {
+            new: true,
+            runValidators: true
+        });
+
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        res.status(200).json({ success: true, message: 'Product updated successfully', product });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Failed to update product' });
     }
+};
 
-    if(req.user.role != "admin"){
-        res.status(403).json({
-            message : "You are not authorized to update a product"
-        })
-        return;
+// Delete a product
+export const deleteProduct = async (req, res) => {
+    try {
+        const product = await Product.findByIdAndDelete(req.params.productId);
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Product not found' });
+        }
+
+        res.status(200).json({ success: true, message: 'Product deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Failed to delete product' });
     }
+};
 
-    Product.findOneAndUpdate({
-        productId : req.params.productId
-    },req.body).then(
-        ()=>{
-            res.json({
-                message : "Product updated successfully"
-            })
-        }
-    ).catch(
-        (err)=>{
-            res.status(500).json({
-                message : "Product not updated"
-            })
-        }
-    )
-}
+// Export upload middleware
+export { upload };

@@ -3,7 +3,7 @@ import Order from "../models/order.js";
 
 export const createOrder = async (req, res) => {
   try {
-    const { name, email, street, city, zipCode, paymentMethod, items, totalAmount, userId, cart } = req.body;
+    const { name, email, street, city, country, zipCode, paymentMethod, items, totalAmount, userId, cart } = req.body;
     console.log('Request Body:', req.body);
 
     if (!name || !email || !street || !city || !zipCode || !paymentMethod || !items || !totalAmount) {
@@ -13,7 +13,7 @@ export const createOrder = async (req, res) => {
     const newOrder = new Order({
       name,
       email,
-      shippingAddress: { street, city, zipCode },
+      shippingAddress: { street, city, country, zipCode },
       paymentMethod,
       items,
       totalAmount,
