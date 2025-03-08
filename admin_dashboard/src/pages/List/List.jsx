@@ -120,7 +120,7 @@ const List = ({ url }) => {
                 <div className="button-group">
                   <Link
                     to={`/update-product/${item._id}`}
-                    className="update-btn"
+                    className="edit-btn"
                     aria-label={`Update ${item.name}`}
                   >
                     Edit

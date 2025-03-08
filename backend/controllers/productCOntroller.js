@@ -67,26 +67,38 @@ export const getProductById = async (req, res) => {
 // Update a product
 export const updateProduct = async (req, res) => {
     try {
-        const updatedData = { ...req.body };
+        let updateData = {
+            name: req.body.name,
+            category: req.body.category,
+            price: req.body.price
+        };
+
+        // Only update the image if a new one was uploaded
         if (req.file) {
-            updatedData.image = req.file.filename;
+            updateData.image = req.file.filename;
         }
 
-        const product = await Product.findByIdAndUpdate(req.params.productId, updatedData, {
-            new: true,
-            runValidators: true
-        });
+        const product = await Product.findByIdAndUpdate(
+            req.params.productId,
+            updateData,
+            { new: true }
+        );
 
         if (!product) {
             return res.status(404).json({ success: false, message: 'Product not found' });
         }
 
-        res.status(200).json({ success: true, message: 'Product updated successfully', product });
+        res.status(200).json({
+            success: true,
+            message: 'Product updated successfully',
+            product
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: 'Failed to update product' });
     }
 };
+
 
 // Delete a product
 export const deleteProduct = async (req, res) => {

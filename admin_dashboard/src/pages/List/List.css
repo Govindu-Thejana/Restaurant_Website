@@ -127,7 +127,7 @@
     margin: 0 0 1rem;
   }
   
-  .update-btn {
+  .edit-btn {
     display: inline-block;
     padding: 0.5rem 1rem;
     background: tomato;
@@ -137,7 +137,7 @@
     transition: background 0.2s;
   }
   
-  .update-btn:hover {
+  .edit-btn:hover {
     background: orangered;
   }
   

@@ -4,6 +4,17 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import './Update.css';
 
+const categories = [
+    "Salad",
+    "Rolls",
+    "Deserts",
+    "Sandwich",
+    "Cake",
+    "Pure Veg",
+    "Pasta",
+    "Noodles"
+];
+
 const UpdateProduct = ({ url }) => {
     const { productId } = useParams();
     const navigate = useNavigate();
@@ -68,14 +79,29 @@ const UpdateProduct = ({ url }) => {
         setProduct({ ...product, [name]: value });
     };
 
+    const handleCategoryChange = (e) => {
+        setProduct({ ...product, category: e.target.value });
+    };
+
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        setProduct({ ...product, image: file });
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setProduct({ ...product, imageUrl: reader.result });
-        };
-        if (file) reader.readAsDataURL(file);
+        if (file) {
+            // Update only the image property, preserving other product properties
+            setProduct(prevProduct => ({
+                ...prevProduct,
+                image: file
+            }));
+
+            // Create a local preview URL
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setProduct(prevProduct => ({
+                    ...prevProduct,
+                    imageUrl: reader.result
+                }));
+            };
+            reader.readAsDataURL(file);
+        }
     };
 
     return (
@@ -100,15 +126,18 @@ const UpdateProduct = ({ url }) => {
                         </div>
                         <div className="form-group">
                             <label htmlFor="category">Category:</label>
-                            <input
-                                type="text"
+                            <select
                                 id="category"
                                 name="category"
                                 value={product.category}
-                                onChange={handleInputChange}
-                                placeholder="Enter category"
+                                onChange={handleCategoryChange}
                                 required
-                            />
+                            >
+                                <option value="">Select Category</option>
+                                {categories.map(category => (
+                                    <option key={category} value={category}>{category}</option>
+                                ))}
+                            </select>
                         </div>
                         <div className="form-group">
                             <label htmlFor="price">Price (Rs):</label>

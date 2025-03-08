@@ -1,3 +1,32 @@
+/* General styling for form inputs */
+input[type="text"], input[type="number"], select {
+  width: 100%;
+  padding: 0.675em 1em;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #333;
+  box-sizing: border-box;
+}
+
+/* Specific styling for the select element */
+select {
+  background-repeat: no-repeat;
+  background-position: right 1em top 50%;
+  background-size: 10px;
+}
+
+/* Ensure consistent height between inputs and select */
+input[type="text"], input[type="number"], select {
+  height: 40px;
+}
+
+/* Optional hover effect for better UX */
+select:hover, input[type="text"]:hover, input[type="number"]:hover {
+  border-color: #888;
+}
+
 .update-container {
     max-width: 1200px;
     margin: 0 auto;

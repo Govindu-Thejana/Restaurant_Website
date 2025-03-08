@@ -17,8 +17,12 @@ const orderSchema = new mongoose.Schema({
     price: Number,
   }],
   totalAmount: { type: Number, required: true, min: 0 },
+  status: {
+    type: String,
+    enum: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"], // Predefined values
+    default: "Pending", // Default status
+  },
 }, { timestamps: true }); // Automatically adds createdAt and updatedAt fields
-
 
 const Order = mongoose.model("Order", orderSchema);
 export default Order;
