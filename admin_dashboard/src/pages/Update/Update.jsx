@@ -167,7 +167,7 @@ const UpdateProduct = ({ url }) => {
                                     <img
                                         src={product.imageUrl}
                                         alt="Product Preview"
-                                        className="product-image-preview"
+                                        className="product-preview"
                                     />
                                 </div>
                             )}

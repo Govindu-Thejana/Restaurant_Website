@@ -29,7 +29,6 @@ const Orders = ({ url }) => {
     const status = event.target.value;
     try {
       const response = await axios.patch(`${url}/api/orders/${orderId}/status`, { status });
-
       if (response.data.success) {
         setOrders(orders.map(order => order._id === orderId ? { ...order, status } : order));
         setFilteredOrders(filteredOrders.map(order => order._id === orderId ? { ...order, status } : order));
@@ -62,17 +61,32 @@ const Orders = ({ url }) => {
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
-
     if (term === '') {
       setFilteredOrders(orders);
     } else {
       const filtered = orders.filter(order =>
         order.name.toLowerCase().includes(term) ||
-        order.email.toLowerCase().includes(term) ||
-        (order.shippingAddress?.street && order.shippingAddress.street.toLowerCase().includes(term)) ||
-        order.items.some(item => item.name.toLowerCase().includes(term))
+        order.email.toLowerCase().includes(term)
       );
       setFilteredOrders(filtered);
+    }
+  };
+
+  // Define status styles
+  const getStatusStyles = (status) => {
+    switch (status) {
+      case 'Pending':
+        return { backgroundColor: '#FFD700', borderColor: '#FFA500' };
+      case 'Processing':
+        return { backgroundColor: '#87CEEB', borderColor: '#4682B4' };
+      case 'Shipped':
+        return { backgroundColor: '#98FB98', borderColor: '#2E8B57' };
+      case 'Delivered':
+        return { backgroundColor: '#32CD32', borderColor: '#228B22' };
+      case 'Cancelled':
+        return { backgroundColor: '#FF6347', borderColor: '#DC143C' };
+      default:
+        return { backgroundColor: '#f0f0f0', borderColor: '#ccc' };
     }
   };
 
@@ -81,67 +95,86 @@ const Orders = ({ url }) => {
   }, []);
 
   return (
-    <div className='order add'>
-      <h3>Order Page</h3>
-      <input
-        type="search"
-        placeholder="Search by name, email, address, or item"
-        value={searchTerm}
-        onChange={handleSearch}
-        className="search-bar"
-      />
+    <div className='orders-container'>
+      <div className="orders-header">
+        <h3>Orders Management</h3>
+        <input
+          type="search"
+          placeholder="Search by name or email"
+          value={searchTerm}
+          onChange={handleSearch}
+          className="search-bar"
+        />
+      </div>
 
       {loading ? (
-        <p>Loading...</p>
+        <div className="loading">Loading orders...</div>
+      ) : filteredOrders.length === 0 ? (
+        <div className="no-orders">No orders found</div>
       ) : (
         <div className="order-list">
-          {filteredOrders.map((order, index) => (
-            <div key={index} className='order-item'>
-              <img src={assets.parcel_icon} alt="Parcel" />
-
-              <p className='order-item-name'><strong>Customer Name:</strong> {order.name}</p>
-              <p className='order-item-email'><strong>Email:</strong> {order.email}</p>
-              {order.phoneNumber && (
-                <p className='order-item-phone'><strong>Phone Number:</strong> {order.phoneNumber}</p>
-              )}
-
-              {order.shippingAddress && (
-                <div className="order-item-address">
-                  <p><strong>Shipping Address:</strong> {order.shippingAddress.street}, {order.shippingAddress.city}, {order.shippingAddress.country}, {order.shippingAddress.zipCode}</p>
+          {filteredOrders.map((order) => (
+            <div key={order._id} className='order-item'>
+              <div className="order-icon">
+                <img src={assets.parcel_icon} alt="Parcel" />
+              </div>
+              <div className="order-details">
+                <div className="customer-info">
+                  <p><strong>Name:</strong> {order.name}</p>
+                  <p><strong>Email:</strong> {order.email}</p>
+                  {order.phoneNumber && <p><strong>Phone:</strong> {order.phoneNumber}</p>}
+                  {order.shippingAddress && (
+                    <p><strong>Address:</strong> {order.shippingAddress.street}, {order.shippingAddress.city}, {order.shippingAddress.country}, {order.shippingAddress.zipCode}</p>
+                  )}
+                  <p><strong>Payment:</strong> {order.paymentMethod}</p>
                 </div>
-              )}
-
-              <p className='order-item-payment'><strong>Payment Method:</strong> {order.paymentMethod}</p>
-
-              <h4><strong>Order Items:</strong></h4>
-              <ul className="order-item-list">
-                {order.items?.map((item, idx) => (
-                  <li key={idx}>
-                    <strong>Item Name:</strong> {item.name} <br />
-                    <strong>Quantity:</strong> {item.quantity} <br />
-                    <strong>Price:</strong> Rs. {item.price} <br />
-                    <strong>Total:</strong> Rs. {item.quantity * item.price}
-                  </li>
-                ))}
-              </ul>
-
-              <p><strong>Total Amount:</strong> Rs. {order.totalAmount}</p>
-
-              <select
-                name="status"
-                value={order.status}
-                onChange={(e) => statusHandler(e, order._id)}
-              >
-                <option value="Pending">Pending</option>
-                <option value="Processing">Processing</option>
-                <option value="Shipped">Shipped</option>
-                <option value="Delivered">Delivered</option>
-                <option value="Cancelled">Cancelled</option>
-              </select>
-
-              <button className="delete-btn" onClick={() => deleteOrderHandler(order._id)}>
-                Delete Order
-              </button>
+                <div className="order-items">
+                  <h4>Items:</h4>
+                  <ul>
+                    {order.items?.map((item, idx) => (
+                      <li key={idx} className="order-item-detail">
+                        <img
+                          src={item.image ? `${url}/uploads/${item.image}` : assets.placeholder_image}
+                          alt={item.name || "Item"}
+                          className="product-preview"
+                          loading="lazy"
+                          onError={(e) => { e.target.src = assets.placeholder_image; }}
+                        />
+                        <div className="item-info">
+                          <p><strong>{item.name}</strong></p>
+                          <p>Qty: {item.quantity} | Price: Rs. {item.price} | Total: Rs. {item.quantity * item.price}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <div className="order-summary-actions">
+                <div className="order-total">
+                  <p><strong>Total:</strong> Rs. {order.totalAmount}</p>
+                </div>
+                <div className="order-actions">
+                  <select
+                    name="status"
+                    value={order.status}
+                    onChange={(e) => statusHandler(e, order._id)}
+                    className="status-select"
+                    style={getStatusStyles(order.status)}
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Processing">Processing</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                  <button
+                    className="delete-btn"
+                    onClick={() => deleteOrderHandler(order._id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
             </div>
           ))}
         </div>

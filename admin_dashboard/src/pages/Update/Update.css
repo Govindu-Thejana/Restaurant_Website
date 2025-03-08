@@ -115,7 +115,7 @@ select:hover, input[type="text"]:hover, input[type="number"]:hover {
     text-align: center;
   }
   
-  .product-image-preview {
+  .product-preview {
     max-width: 250px;
     max-height: 250px;
     object-fit: cover;
@@ -124,7 +124,7 @@ select:hover, input[type="text"]:hover, input[type="number"]:hover {
     transition: transform 0.2s;
   }
   
-  .product-image-preview:hover {
+  .product-preview:hover {
     transform: scale(1.05);
   }
   
@@ -206,7 +206,7 @@ select:hover, input[type="text"]:hover, input[type="number"]:hover {
       font-size: 1.8rem;
     }
   
-    .product-image-preview {
+    .product-preview {
       max-width: 200px;
       max-height: 200px;
     }

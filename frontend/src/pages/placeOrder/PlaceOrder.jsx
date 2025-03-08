@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
+import Swal from 'sweetalert2'
 import './PlaceOrder.css';
 
 const PlaceOrder = () => {
@@ -44,7 +45,8 @@ const PlaceOrder = () => {
           productId: itemId,
           name: itemInfo.name,
           price: itemInfo.price,
-          quantity: cartItems[itemId]
+          quantity: cartItems[itemId],
+          image: itemInfo.image,
         };
       }),
       totalAmount: total,
@@ -63,8 +65,11 @@ const PlaceOrder = () => {
 
         // Clear cart after order is successfully placed
 
-        // Optionally, redirect to a confirmation page or show success message
-        alert('Order placed successfully!');
+        Swal.fire({
+          title: "Done!",
+          text: "Your Order Placed Successfully!",
+          icon: "success"
+        });
       } else {
         console.error('Error placing order:', response.data);
         alert('Failed to place order. Please try again.');
