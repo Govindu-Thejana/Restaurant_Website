@@ -18,9 +18,9 @@ const mongoURI = process.env.mongoDBURL;
 
 const app = express();
 app.use(cors({
-    origin: 'https://restaurant-frontend-mocha.vercel.app', // Frontend URL
+    origin: ['http://localhost:5174', 'https://restaurant-frontend-mocha.vercel.app'], // Allow all domains for now
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-    credentials: true // Allow cookies if required
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Database connection
