@@ -1,71 +1,126 @@
-.login-popup{
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+/* LoginPopup.css */
+.login-popup {
+    position: fixed; /* Changed to fixed for better overlay behavior */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6); /* Slightly darker overlay */
     display: flex;
-    z-index: 1;
+    justify-content: center;
+    align-items: center; /* Added for better centering */
+    z-index: 1000; /* Higher z-index for overlay */
 }
-.login-popup-container{
-    place-self: center;
-    width: max(23vw,330px);
-    color: #808080;
-    padding: 25px 30px;
-    border-radius: 8px;
-    font-size: 14px;
-    animation: fade;
-    margin: auto;
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
+
+.login-popup-container {
+    width: clamp(330px, 25vw, 400px); /* More flexible width */
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Added subtle shadow */
+    animation: fadeIn 0.3s ease-in-out; /* Fixed animation name */
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1.5rem;
 }
-.login-popup-title{
+
+/* Animation keyframes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-popup-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: black;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
 
+.login-popup-title h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
 }
-.login-popup-title img{
-    width: 16px;
+
+.login-popup-title img {
+    width: 20px; /* Slightly larger close icon */
     cursor: pointer;
+    transition: transform 0.2s ease; /* Added hover effect */
 }
-.login-popup-inputs{
+
+.login-popup-title img:hover {
+    transform: scale(1.1);
+}
+
+.login-popup-inputs { /* Fixed class name to match JSX */
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1rem;
 }
-.login-popup-inputs input{
-    padding: 10px;
-    border: 1px solid #e2e2e2;
-    border-radius: 4px;
-    outline: none;
+
+.login-popup-inputs input {
+    padding: 12px 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.2s ease;
 }
-.login-popup-container button{
-    padding: 10px;
+
+.login-popup-inputs input:focus {
+    border-color: tomato;
+    box-shadow: 0 0 0 2px rgba(255, 99, 71, 0.2); /* Added focus ring */
+}
+
+.login-popup-container button {
+    padding: 12px;
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     background-color: tomato;
     color: white;
     cursor: pointer;
-    outline: none;
     font-size: 15px;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
 
+.login-popup-container button:hover {
+    background-color: #ff4500; /* Darker shade on hover */
 }
-.login-popup-condition{
+
+.login-popup-condition {
     display: flex;
-    align-items: start;
+    align-items: center; /* Changed to center for better checkbox alignment */
     gap: 8px;
-    margin-top:-15px;
+    font-size: 13px;
+    color: #666;
 }
-.login-popup-condition input{
-    margin-top:5px;
+
+.login-popup-condition input {
+    margin: 0; /* Reset margin */
+    accent-color: tomato; /* Custom checkbox color */
 }
-.login-popup p span{
+
+.login-popup-container p {
+    font-size: 13px;
+    color: #666;
+    text-align: center;
+}
+
+.login-popup-container p span {
     color: tomato;
     cursor: pointer;
     font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.login-popup-container p span:hover {
+    color: #ff4500;
+    text-decoration: underline;
 }
