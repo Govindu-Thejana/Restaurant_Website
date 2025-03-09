@@ -8,15 +8,19 @@ import productRouter from './routes/productRouter.js';
 import jwt from 'jsonwebtoken';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
 import path from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+dotenv.config();
+const mongoURI = process.env.mongoDBURL;
 
 const app = express();
 app.use(cors());
 
 // Database connection
-mongoose.connect('mongodb+srv://admin:123@cluster0.3oi6t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+mongoose.connect(mongoURI)
     .then(() => console.log("Connected to database"))
     .catch(err => console.error("Database connection error:", err));
 
@@ -47,6 +51,10 @@ app.use('/api/orders', orderRouter);
 app.use('/api/food', orderRouter);
 app.use('/api/products', productRouter);
 
+app.get('/', (request, response) => {
+    console.log(request);
+    return response.status(200).send("Welcome To our Restaurant");
+});
 
 // Start the server
 const PORT = 3000;

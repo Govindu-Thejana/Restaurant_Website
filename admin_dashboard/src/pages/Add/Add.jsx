@@ -49,7 +49,6 @@ const Add = ({ url }) => {
       const response = await axios.post(`${url}/api/products/add`, formData); // Fixed template literal
 
       if (response.data.success) {
-        alert('Product added successfully');
         setData({
           name: '',
           description: '',
