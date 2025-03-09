@@ -1,29 +1,12 @@
 import { createContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import { food_list } from '../assets/assets';
 
 export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
-  const [products, setProducts] = useState([]);
-  const url = "https://restaurant-backend-flame.vercel.app";
-
-  // Fetch products from database
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get(`${url}/api/products/`);
-      setProducts(response.data.products);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
 
   const addToCart = (itemId) => {
-    console.log('Adding item to cart:', itemId);
     setCartItems((prev) => ({
       ...prev,
       [itemId]: (prev[itemId] || 0) + 1,
@@ -31,9 +14,8 @@ const StoreContextProvider = (props) => {
   };
 
   const removeFromCart = (itemId) => {
-    console.log('Removing item from cart:', itemId);
     setCartItems((prev) => {
-      if (!prev[itemId]) return prev;
+      if (!prev[itemId]) return prev; // If item doesn't exist, do nothing
       const newCount = prev[itemId] - 1;
       if (newCount <= 0) {
         const { [itemId]: _, ...rest } = prev;
@@ -45,9 +27,9 @@ const StoreContextProvider = (props) => {
 
   const getTotalCartAmount = () => {
     let totalAmount = 0;
-    for (const item in cartItems) {
+    for (const item in cartItems) { // Fixed variable name
       if (cartItems[item] > 0) {
-        let itemInfo = products.find((product) => product._id === item);
+        let itemInfo = food_list.find((product) => product._id === item);
         if (itemInfo) {
           totalAmount += itemInfo.price * cartItems[item];
         }
@@ -57,13 +39,12 @@ const StoreContextProvider = (props) => {
   };
 
   const contextValue = {
-    products, // Replace food_list with products
+    food_list,
     cartItems,
-    setCartItems,
     setCartItems,
     addToCart,
     removeFromCart,
-    getTotalCartAmount,
+    getTotalCartAmount, // Fixed function name
   };
 
   return (
