@@ -17,7 +17,11 @@ dotenv.config();
 const mongoURI = process.env.mongoDBURL;
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'https://restaurant-frontend-mocha.vercel.app', // Frontend URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
+    credentials: true // Allow cookies if required
+}));
 
 // Database connection
 mongoose.connect(mongoURI)
