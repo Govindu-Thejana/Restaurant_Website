@@ -10,7 +10,7 @@ const Cart = () => {
   const { cartItems, addToCart, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(false);
-  const url = "http://localhost:3000";
+  const url = "https://restaurant-backend-flame.vercel.app";
   const navigate = useNavigate();
 
   const fetchFoods = async () => {
@@ -66,23 +66,23 @@ const Cart = () => {
                         </div>
                         <p className='cart-item-price'>₹{item.price.toFixed(2)}</p>
                         <div className='cart-item-counter'>
-                          <img 
-                            onClick={() => removeFromCart(item._id)} 
-                            src={assets.remove_icon_red} 
-                            alt="Remove" 
+                          <img
+                            onClick={() => removeFromCart(item._id)}
+                            src={assets.remove_icon_red}
+                            alt="Remove"
                             className='cart-counter-icon'
                           />
                           <p>{cartItems[item._id]}</p>
-                          <img 
-                            onClick={() => addToCart(item._id)} 
-                            src={assets.add_icon_green} 
-                            alt="Add" 
+                          <img
+                            onClick={() => addToCart(item._id)}
+                            src={assets.add_icon_green}
+                            alt="Add"
                             className='cart-counter-icon'
                           />
                         </div>
                         <p className='cart-item-total'>₹{(item.price * cartItems[item._id]).toFixed(2)}</p>
-                        <button 
-                          onClick={() => removeFromCart(item._id)} 
+                        <button
+                          onClick={() => removeFromCart(item._id)}
                           className='cart-item-remove'
                         >
                           <FaTrash />

@@ -6,7 +6,7 @@ export const StoreContext = createContext(null);
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
   const [products, setProducts] = useState([]);
-  const url = "http://localhost:3000";
+  const url = "https://restaurant-backend-flame.vercel.app";
 
   // Fetch products from database
   const fetchProducts = async () => {

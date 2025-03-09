@@ -54,7 +54,7 @@ const PlaceOrder = () => {
 
 
     try {
-      const response = await axios.post('http://localhost:3000/api/orders/new', orderData, {
+      const response = await axios.post('https://restaurant-backend-flame.vercel.app/api/orders/new', orderData, {
         headers: {
           'Content-Type': 'application/json'
         }

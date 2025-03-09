@@ -7,7 +7,7 @@ const FoodItem = ({ id, name, description, price, image }) => {
   // const [itemCount, setItemCount] = useState(0);
 
   const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
-  const url = "http://localhost:3000";
+  const url = "https://restaurant-backend-flame.vercel.app";
   const placeholderImage = 'path/to/placeholder/image.jpg'; // Define a placeholder image
 
   return (

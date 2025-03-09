@@ -10,7 +10,7 @@ const FoodDisplay = ({ category }) => {
   const fetchFoods = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('http://localhost:3000/api/products/');
+      const response = await axios.get('https://restaurant-backend-flame.vercel.app/api/products/');
       console.log(response.data.products);
       setFoods(response.data.products);
     } catch (error) {
@@ -38,7 +38,7 @@ const FoodDisplay = ({ category }) => {
           })}
         </div>
       )}
-    </div> 
+    </div>
   );
 };
 
