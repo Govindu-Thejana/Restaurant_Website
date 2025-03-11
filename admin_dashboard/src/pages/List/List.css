@@ -130,7 +130,7 @@
   .edit-btn {
     display: inline-block;
     padding: 0.5rem 1rem;
-    background: tomato;
+    background: green;
     color: white;
     text-decoration: none;
     border-radius: 4px;
@@ -171,7 +171,7 @@
   .delete-btn {
     display: inline-block;
     padding: 0.5rem 1rem;
-    background: tomato;
+    background: red;
     color: white;
     text-decoration: none;
     border-radius: 4px;
@@ -180,7 +180,7 @@
   }
   
   .delete-btn:hover {
-    background: red;
+    background: black;
   }
   
   .button-group {

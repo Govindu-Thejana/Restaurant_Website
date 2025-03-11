@@ -5,7 +5,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const Add = ({ url }) => {
-  const [image, setImage] = useState(false);
+  const [file, setFile] = useState(null); // Use 'file' instead of 'image'
   const [data, setData] = useState({
     name: '',
     description: '',
@@ -26,7 +26,7 @@ const Add = ({ url }) => {
     if (!data.name) newErrors.name = 'Product name is required';
     if (!data.description) newErrors.description = 'Product description is required';
     if (!data.price || isNaN(Number(data.price))) newErrors.price = 'Invalid price';
-    if (!image) newErrors.image = 'Product image is required';
+    if (!file) newErrors.file = 'Product image is required'; // Use 'file' here
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -37,45 +37,73 @@ const Add = ({ url }) => {
     if (!validateForm()) return;
 
     try {
+      toast.info("Uploading image to Cloudinary...");
       const formData = new FormData();
-      formData.append("name", data.name);
-      formData.append("description", data.description);
-      formData.append("price", Number(data.price));
-      formData.append("category", data.category);
-      formData.append("image", image);
+      formData.append("file", file); // Use 'file' instead of 'image'
+      formData.append("upload_preset", "Restaurant"); // Your upload preset
+      formData.append("cloud_name", "dgdkvmijt"); // Your Cloudinary cloud name
 
-      console.log("Submitting Data:", Object.fromEntries(formData.entries())); // Debugging
+      // Upload image to Cloudinary
+      const res = await fetch("https://api.cloudinary.com/v1_1/dgdkvmijt/image/upload", {
+        method: "POST",
+        body: formData, // Send the formData, not data
+      });
 
-      const response = await axios.post(`${url}/api/products/add`, formData); // Fixed template literal
-
-      if (response.data.success) {
-        setData({
-          name: '',
-          description: '',
-          category: 'Salad',
-          price: ''
-        });
-        setImage(false);
-        toast.success(response.data.message);
-      } else {
-        toast.error(response.data.message || "Failed to add product");
+      if (!res.ok) {
+        const errorResponse = await res.json(); // Capture the response body
+        toast.error("Error uploading image to Cloudinary:", errorResponse.error.message);
+        throw new Error(`Error uploading image: ${errorResponse.error.message}`);
       }
-    } catch (error) {
-      console.error("Error:", error);
-      toast.error("Failed to add product. Please check your connection.");
+      if (res.ok) {
+        toast.success("Image uploaded successfully");
+      }
+      const uploadedImageURL = await res.json();
+      console.log('Uploaded Image URL:', uploadedImageURL.secure_url); // URL of the uploaded image
+
+      // Now you can send the product data along with the image URL
+      const productData = {
+        ...data,
+        price: Number(data.price),
+        image: uploadedImageURL.secure_url, // Add the uploaded image URL here
+      };
+
+      // Make a POST request to your server to save the product data
+      try {
+        toast.info("Adding product to the database...");
+        const response = await axios.post(`${url}/api/products/add`, productData);
+        console.log('Server Response:', response.data); // Log the server response
+        if (response.data.success) {
+          setData({
+            name: '',
+            description: '',
+            category: 'Salad',
+            price: ''
+          });
+          setFile(null);
+          toast.success(response.data.message);
+        } else {
+          toast.error(response.data.message || "Failed to add product");
+        }
+      } catch (error) {
+        console.error("Error adding product:", error);
+        toast.error("Failed to add product. Please check your connection.");
+      }
+    } catch (uploadError) {
+      console.error('Error uploading image:', uploadError);
+      toast.error(`Failed to upload image. Details: ${uploadError.message}`);
     }
   };
 
   return (
     <div className='add'>
-      <form className='flex-col' onSubmit={onSubmitHandler} encType="multipart/form-data">
+      <form className='flex-col' onSubmit={onSubmitHandler}>
         <div className="add-img-upload flex-col">
           <p>Upload Image</p>
-          {errors.image && <p style={{ color: 'red' }}>{errors.image}</p>}
-          <label htmlFor="image">
-            <img src={image ? URL.createObjectURL(image) : assets.upload_area} alt="" />
+          {errors.file && <p style={{ color: 'red' }}>{errors.file}</p>}
+          <label htmlFor="file">
+            <img src={file ? URL.createObjectURL(file) : assets.upload_area} alt="" />
           </label>
-          <input type="file" id="image" hidden required onChange={(e) => setImage(e.target.files[0])} />
+          <input type="file" id="file" hidden required onChange={(e) => setFile(e.target.files[0])} />
         </div>
 
         <div className="add-product-name flex-col">
@@ -92,7 +120,7 @@ const Add = ({ url }) => {
 
         <div className="add-category-price">
           <p>Product category</p>
-          <select name="category" id="category" onChange={onChangeHandler} value={data.category}> 
+          <select name="category" id="category" onChange={onChangeHandler} value={data.category}>
             <option value="Salad">Salad</option>
             <option value="Rolls">Rolls</option>
             <option value="Deserts">Deserts</option>

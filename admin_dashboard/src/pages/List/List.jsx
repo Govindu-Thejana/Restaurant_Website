@@ -107,7 +107,7 @@ const List = ({ url }) => {
             <div key={item._id} className="product-card">
               <div className="image-container">
                 <img
-                  src={`${url}/uploads/${item.image}`}
+                  src={item.image}
                   alt={item.name}
                   className="product-image"
                   loading="lazy"

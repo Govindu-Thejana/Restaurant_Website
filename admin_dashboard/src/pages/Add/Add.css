@@ -36,4 +36,8 @@ font-size: 16px;
     color: white;
     border: none;
     cursor: pointer;
+    }
+    
+    .add-btn:hover{
+        background-color: tomato;
 }

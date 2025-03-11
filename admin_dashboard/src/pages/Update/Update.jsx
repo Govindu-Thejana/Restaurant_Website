@@ -20,9 +20,10 @@ const UpdateProduct = ({ url }) => {
     const navigate = useNavigate();
     const [product, setProduct] = useState({
         name: '',
+        description: '',
         category: '',
         price: '',
-        image: null,
+        image: '', // To store the new image file
         imageUrl: '', // To store the URL of the current image
     });
 
@@ -32,9 +33,10 @@ const UpdateProduct = ({ url }) => {
             if (response.data.success) {
                 setProduct({
                     name: response.data.product.name,
+                    description: response.data.product.description,
                     category: response.data.product.category,
                     price: response.data.product.price,
-                    imageUrl: `${url}/uploads/${response.data.product.image}`,
+                    imageUrl: response.data.product.image,
                 });
             } else {
                 toast.error("Error fetching product");
@@ -48,15 +50,40 @@ const UpdateProduct = ({ url }) => {
     const updateProduct = async (e) => {
         e.preventDefault();
         try {
-            const formData = new FormData();
-            formData.append('name', product.name);
-            formData.append('category', product.category);
-            formData.append('price', product.price);
-            if (product.image) {
-                formData.append('image', product.image);
+            let imageToUpload = product.image;
+            let imageUrl = product.imageUrl;
+
+            if (imageToUpload) {
+                // Upload new image to Cloudinary
+                const formData = new FormData();
+                formData.append("file", imageToUpload);
+                formData.append("upload_preset", "Restaurant"); // Your upload preset
+                formData.append("cloud_name", "dgdkvmijt"); // Your Cloudinary cloud name
+
+                const res = await fetch("https://api.cloudinary.com/v1_1/dgdkvmijt/image/upload", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (!res.ok) {
+                    const errorResponse = await res.json();
+                    throw new Error(`Error uploading image: ${errorResponse.error.message}`);
+                }
+
+                const uploadedImageURL = await res.json();
+                imageUrl = uploadedImageURL.secure_url;
             }
 
-            const response = await axios.put(`${url}/api/products/${productId}`, formData);
+            // Update product data
+            const productData = {
+                name: product.name,
+                description: product.description,
+                category: product.category,
+                price: product.price,
+                image: imageUrl, // Use the uploaded image URL or the existing one
+            };
+
+            const response = await axios.put(`${url}/api/products/${productId}`, productData);
 
             if (response.data.success) {
                 toast.success(response.data.message);
@@ -86,13 +113,11 @@ const UpdateProduct = ({ url }) => {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            // Update only the image property, preserving other product properties
             setProduct(prevProduct => ({
                 ...prevProduct,
                 image: file
             }));
 
-            // Create a local preview URL
             const reader = new FileReader();
             reader.onloadend = () => {
                 setProduct(prevProduct => ({
@@ -121,6 +146,18 @@ const UpdateProduct = ({ url }) => {
                                 value={product.name}
                                 onChange={handleInputChange}
                                 placeholder="Enter product name"
+                                required
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="description">Product Description:</label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                value={product.description}
+                                onChange={handleInputChange}
+                                placeholder="Enter product description"
+                                rows="6"
                                 required
                             />
                         </div>
@@ -167,7 +204,7 @@ const UpdateProduct = ({ url }) => {
                                     <img
                                         src={product.imageUrl}
                                         alt="Product Preview"
-                                        className="product-preview"
+                                        className="product-previews"
                                     />
                                 </div>
                             )}

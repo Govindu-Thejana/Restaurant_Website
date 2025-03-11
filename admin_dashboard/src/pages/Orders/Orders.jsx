@@ -134,7 +134,7 @@ const Orders = ({ url }) => {
                     {order.items?.map((item, idx) => (
                       <li key={idx} className="order-item-detail">
                         <img
-                          src={item.image ? `${url}/uploads/${item.image}` : assets.placeholder_image}
+                          src={item.image ? item.image : assets.placeholder_image}
                           alt={item.name || "Item"}
                           className="product-preview"
                           loading="lazy"
