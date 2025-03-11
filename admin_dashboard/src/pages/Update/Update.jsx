@@ -39,11 +39,11 @@ const UpdateProduct = ({ url }) => {
                     imageUrl: response.data.product.image,
                 });
             } else {
-                toast.error("Error fetching product");
+                toast.error("Error fetching product: " + response.data.message);
             }
         } catch (error) {
             console.error("Fetch Error:", error);
-            toast.error("Failed to fetch product");
+            toast.error("Failed to fetch product. Please check your connection.");
         }
     };
 

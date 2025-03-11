@@ -3,8 +3,10 @@ import './Add.css';
 import { assets } from '../../assets/assets';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const Add = ({ url }) => {
+  const navigate = useNavigate();
   const [file, setFile] = useState(null); // Use 'file' instead of 'image'
   const [data, setData] = useState({
     name: '',
@@ -81,6 +83,8 @@ const Add = ({ url }) => {
           });
           setFile(null);
           toast.success(response.data.message);
+          navigate('/list'); // Navigate back to the list page
+
         } else {
           toast.error(response.data.message || "Failed to add product");
         }
