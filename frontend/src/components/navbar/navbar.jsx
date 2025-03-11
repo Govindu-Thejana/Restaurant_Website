@@ -22,12 +22,14 @@ const Navbar = ({ setShowLogin }) => {
             Menu
           </a>
         </li>
-        <li>
-          <Link to='/cart' className={menu === "Cart" ? "active" : ""} onClick={() => setMenu("Cart")}>
-            Cart
-          </Link>
-          <div className={getTotalCartAmount() === 0 ? "" : "dot"}></div>
-        </li>
+        <div className='navbar-search-icon'>
+          <li>
+            <Link to='/cart' className={menu === "Cart" ? "active" : ""} onClick={() => setMenu("Cart")}>
+              Cart
+            </Link>
+            <div className={getTotalCartAmount() === 0 ? "" : "dot"}></div>
+          </li>
+        </div>
         <li>
           <a href='#app-download' className={menu === "Mobile-App" ? "active" : ""} onClick={() => setMenu("Mobile-App")}>
             Mobile App
