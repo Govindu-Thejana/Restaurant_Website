@@ -1,6 +1,6 @@
 <div align="center">
   <br />
-      <img src="assets/screenshots/herosection.png" alt="Project Banner" style="border-radius:12px; max-width:100%;">
+<img src="assets/screenshots/heroSection.png" alt="Home Page" style="border-radius:12px; max-width:100%;"> 
   <br />
 
   <div>
@@ -58,20 +58,19 @@ A web-based restaurant management system that allows customers to browse menus, 
 
 ## <a name="screenshots">📸 Screenshots</a>
 
-| Landing Page |
-| :-----------: |
-|  <img src="assets/screenshots/heroSection.png" alt="Home Page" style="border-radius:12px; max-width:100%;">  |
-| cart Page|
-|  <img src="assets/screenshots/cart.png" alt="cart" style="border-radius:12px; max-width:100%;">  |
-| Order Page |
-| <img src="assets/screenshots/order.png" alt="Order Page" style="border-radius:12px; max-width:100%;">   |
-| Admin Product Page |
-| <img src="assets/screenshots/adminAdd.png" alt="Create Podcast Page" style="border-radius:12px; max-width:100%;"> |
-| Admin List Page |
-|  <img src="assets/screenshots/adminList.png" alt="Podcast Details Page" style="border-radius:12px; max-width:100%;"> |
-| Admin Orders Page |
-|  <img src="assets/screenshots/adminOrders.png" alt="Profile Page" style="border-radius:12px; max-width:100%;"> |
-
+|                                                    Landing Page                                                     |
+| :-----------------------------------------------------------------------------------------------------------------: |
+|     <img src="assets/screenshots/heroSection.png" alt="Home Page" style="border-radius:12px; max-width:100%;">      |
+|                                                      cart Page                                                      |
+|           <img src="assets/screenshots/cart.png" alt="cart" style="border-radius:12px; max-width:100%;">            |
+|                                                     Order Page                                                      |
+|        <img src="assets/screenshots/order.png" alt="Order Page" style="border-radius:12px; max-width:100%;">        |
+|                                                 Admin Product Page                                                  |
+|  <img src="assets/screenshots/adminAdd.png" alt="Create Podcast Page" style="border-radius:12px; max-width:100%;">  |
+|                                                   Admin List Page                                                   |
+| <img src="assets/screenshots/adminList.png" alt="Podcast Details Page" style="border-radius:12px; max-width:100%;"> |
+|                                                  Admin Orders Page                                                  |
+|    <img src="assets/screenshots/adminOrders.png" alt="Profile Page" style="border-radius:12px; max-width:100%;">    |
 
 ## 🚀 Getting Started
 
