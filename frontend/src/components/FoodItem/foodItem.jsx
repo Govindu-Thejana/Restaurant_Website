@@ -2,29 +2,33 @@ import { useContext } from 'react';
 import './foodItem.css';
 import { assets } from '../../assets/assets';
 import { StoreContext } from '../../context/StoreContext';
+import { toast } from 'react-toastify';
 
 const FoodItem = ({ id, name, description, price, image }) => {
   // const [itemCount, setItemCount] = useState(0);
 
   const { cartItems, addToCart, removeFromCart } = useContext(StoreContext);
-  const url = "https://restaurant-backend-flame.vercel.app";
-  const placeholderImage = 'path/to/placeholder/image.jpg'; // Define a placeholder image
 
   return (
     <div className='food-item'>
       <div className="food-item-image-container">
-        <img
-          className='food-item-image'
-          src={`${url}/uploads/${image}`}
-          alt={name}
-          loading="lazy"
-          onError={(e) => {
-            e.target.src = 'path/to/placeholder/image.jpg'; // Replace with a placeholder image
-          }}
-        />
+        <img className='food-item-image' src={image} alt="" />
         {!cartItems[id]
-          //  { !  //itemCount
-          ? <img className='add' onClick={() => addToCart(id)} src={assets.add_icon_white} alt="" />
+          ?
+          <img
+            className='add'
+            onClick={async () => {
+              try {
+                await addToCart(id);
+                toast.success('Item added to cart!',id);
+              } catch (error) {
+                console.error('Error adding item to cart:', error);
+                toast.error('Failed to add item to cart. Please try again.');
+              }
+            }}
+            src={assets.add_icon_white}
+            alt=""
+          />
           : <div className='food-item-counter'>
             <img onClick={() => removeFromCart(id)} src={assets.remove_icon_red} alt="" />
             <p>{cartItems[id]}</p>

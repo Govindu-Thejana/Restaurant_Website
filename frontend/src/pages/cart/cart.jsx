@@ -5,6 +5,8 @@ import { FaTrash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { assets } from '../../assets/assets'; // Add this import for the icons
+import { toast } from 'react-toastify';
+
 
 const Cart = () => {
   const { cartItems, addToCart, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
@@ -17,25 +19,37 @@ const Cart = () => {
     setLoading(true);
     try {
       const response = await axios.get(`${url}/api/products/`);
-      setFoods(response.data.products);
+      if (response.status === 200) {
+        setFoods(response.data.products);
+      } else {
+        console.error("Failed to fetch foods:", response.statusText);
+        alert("Failed to load menu items. Please try again later.");
+      }
     } catch (error) {
       console.error("Fetch Error:", error);
+      alert("An error occurred while fetching menu items. Please try again later.");
     } finally {
       setLoading(false);
     }
   };
 
+
   useEffect(() => {
     fetchFoods();
   }, []);
 
-  const deliveryFee = 2;
+  const deliveryFee = 200;
   const subtotal = getTotalCartAmount();
   const total = subtotal + deliveryFee;
 
   const handleCheckout = () => {
-    navigate('/order');
+    if (Object.keys(cartItems).length === 0 || getTotalCartAmount() === 0) {
+      toast.error("Your cart is empty. Please add items before proceeding to checkout.",);
+    } else {
+      navigate('/order');
+    }
   };
+
 
   return (
     <div className='cart-container'>
@@ -61,10 +75,10 @@ const Cart = () => {
                     return (
                       <div key={item._id} className='cart-item'>
                         <div className='cart-item-details'>
-                          <img src={`${url}/uploads/${item.image}`} alt={item.name} className='cart-item-image' />
+                          <img src={item.image} alt={item.name} className='cart-item-image' />
                           <p className='cart-item-name'>{item.name}</p>
                         </div>
-                        <p className='cart-item-price'>₹{item.price.toFixed(2)}</p>
+                        <p className='cart-item-price'>Rs:{item.price.toFixed(2)}</p>
                         <div className='cart-item-counter'>
                           <img
                             onClick={() => removeFromCart(item._id)}
@@ -80,7 +94,7 @@ const Cart = () => {
                             className='cart-counter-icon'
                           />
                         </div>
-                        <p className='cart-item-total'>₹{(item.price * cartItems[item._id]).toFixed(2)}</p>
+                        <p className='cart-item-total'>Rs:{(item.price * cartItems[item._id]).toFixed(2)}</p>
                         <button
                           onClick={() => removeFromCart(item._id)}
                           className='cart-item-remove'
@@ -102,15 +116,15 @@ const Cart = () => {
           <div className="cart-summary-details">
             <div className="cart-summary-row">
               <p>Subtotal</p>
-              <p>₹{subtotal.toFixed(2)}</p>
+              <p>Rs:{subtotal.toFixed(2)}</p>
             </div>
             <div className="cart-summary-row">
               <p>Delivery Fee</p>
-              <p>₹{deliveryFee.toFixed(2)}</p>
+              <p>Rs:{deliveryFee.toFixed(2)}</p>
             </div>
             <div className="cart-summary-row total">
               <p>Total</p>
-              <p>₹{total.toFixed(2)}</p>
+              <p>Rs:{total.toFixed(2)}</p>
             </div>
           </div>
           <button className="checkout-button" onClick={handleCheckout}>

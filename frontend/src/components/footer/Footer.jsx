@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="footer-content">
         <div className="footer-content-left">
           <img src={assets.logo} alt="" />
-          <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Reprehenderit atque vero eos provident sit molestiae aut in incidunt! Fuga nemo quisquam aliquam reprehenderit molestias quo debitis, asperiores ullam iusto velit.</p>
+          <p>Welcome to Tomato Restaurant, where we serve the freshest and most delicious dishes. Join us for an unforgettable dining experience.</p>
           <div className="footer-social-icons">
             <img src={assets.facebook_icon} alt="" />
             <img src={assets.twitter_icon} alt="" />
@@ -18,23 +18,22 @@ const Footer = () => {
         <div className="footer-content-center">
           <h2>COMPANY</h2>
           <ul>
-            <li>Home</li>
-            <li>About Us</li>
-            <li>Delivery</li>
-            <li>Privacy policy</li>
+            <li><b>Home</b></li>
+            <li><b>About Us</b></li>
+            <li><b>Delivery</b></li>
+            <li><b>Privacy policy</b></li>
           </ul>
         </div>
         <div className="footer-content-right">
           <h2>GET IN TOUCH</h2>
           <ul>
-            <li>+94713834401</li>
-            <li>tomato@food.net</li>
+            <li><b>+947123456789</b></li>
+            <li><u><b>rapidmail.thejana@gmail.com</b></u></li>
           </ul>
         </div>
-        
       </div>
-      <hr/>
-      <p className="footer-copyright">Copyright 2024 © Tomato.com - All Right Reserved.</p>
+      <hr />
+      <p className="footer-copyright">Copyright 2025 © Tomato.com - Created with 🤍 by <a href="https://www.linkedin.com/in/govindu-thejana" target="_blank" rel="noopener noreferrer"><u><b>Govindu Thejana</b></u></a> - All Right Reserved.</p>
     </div>
   )
 }

@@ -60,7 +60,6 @@ const StoreContextProvider = (props) => {
     products, // Replace food_list with products
     cartItems,
     setCartItems,
-    setCartItems,
     addToCart,
     removeFromCart,
     getTotalCartAmount,

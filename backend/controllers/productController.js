@@ -1,44 +1,40 @@
 import Product from '../models/product.js';
-import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 
-// Configure multer for file uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './uploads');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
-
-const upload = multer({ storage: storage });
-
-// Create a new product
+// Function to create a new product
 export const createProduct = async (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ success: false, message: 'Image file is required' });
+        console.log('Request body:', req.body);
+        const { name, description, price, category, image } = req.body;
+        if (!name || !description || !price || !category || !image) {
+            return res.status(400).json({ success: false, message: 'Please provide all required fields.' });
         }
+
+        if (isNaN(Number(price))) {
+            return res.status(400).json({ success: false, message: 'Invalid price. Please enter a valid number.' });
+        }
+
         const productId = uuidv4();
-        console.log(productId);
         const product = new Product({
             productId,
             name: req.body.name,
             description: req.body.description,
             price: req.body.price,
             category: req.body.category,
-            image: req.file.filename
+            image: req.body.image
         });
 
         await product.save();
-        res.status(201).json({ success: true, message: 'Product created successfully', product });
+        res.status(201).json({ success: true, message: 'Product added successfully', product });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Failed to create product' });
+        console.error('Error creating product:', error);
+        if (error.name === 'ValidationError') {
+            res.status(400).json({ success: false, message: 'Validation error', details: error.errors });
+        } else {
+            res.status(500).json({ success: false, message: 'Failed to create product' });
+        }
     }
 };
-
 // Get all products
 export const getAllProducts = async (req, res) => {
     try {
@@ -69,14 +65,11 @@ export const updateProduct = async (req, res) => {
     try {
         let updateData = {
             name: req.body.name,
+            description: req.body.description,
             category: req.body.category,
-            price: req.body.price
+            price: req.body.price,
+            image: req.body.image // Update image URL directly
         };
-
-        // Only update the image if a new one was uploaded
-        if (req.file) {
-            updateData.image = req.file.filename;
-        }
 
         const product = await Product.findByIdAndUpdate(
             req.params.productId,
@@ -94,7 +87,7 @@ export const updateProduct = async (req, res) => {
             product
         });
     } catch (error) {
-        console.error(error);
+        console.error('Error updating product:', error);
         res.status(500).json({ success: false, message: 'Failed to update product' });
     }
 };
@@ -114,6 +107,3 @@ export const deleteProduct = async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to delete product' });
     }
 };
-
-// Export upload middleware
-export { upload };
