@@ -2,11 +2,12 @@ import React, { useState, useContext } from 'react';
 import { StoreContext } from '../../context/StoreContext';
 import axios from 'axios';
 import Swal from 'sweetalert2'
+import { toast } from 'react-toastify';
 import './PlaceOrder.css';
 
 const PlaceOrder = () => {
   const { cartItems, getTotalCartAmount, clearCart, products } = useContext(StoreContext);
-
+  const [formErrors, setFormErrors] = useState({});
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -23,10 +24,53 @@ const PlaceOrder = () => {
       ...prevState,
       [name]: value
     }));
+    setFormErrors(prevErrors => ({ ...prevErrors, [name]: null }));
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    if (!formData.name) {
+      errors.name = "Name is required";
+    }
+    if (!formData.email || !formData.email.includes('@')) {
+      errors.email = "Invalid email address";
+    }
+    if (!formData.street) {
+      errors.street = "Street address is required";
+    }
+    if (!formData.city) {
+      errors.city = "City is required";
+    }
+    if (!formData.zipCode) {
+      errors.zipCode = "ZIP Code is required";
+    }
+    if (!formData.country) {
+      errors.country = "Country is required";
+    }
+
+    setFormErrors(errors);
+    return errors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const validationErrors = validateForm();
+
+    if (Object.keys(validationErrors).length > 0) {
+      Object.values(validationErrors).forEach((error) => {
+        toast.error(error, {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      });
+      return;
+    }
+
+    if (Object.keys(cartItems).length === 0 || getTotalCartAmount() === 0) {
+      toast.error("Your cart is empty. Please add items before proceeding to checkout.");
+      return;
+    }
+
     const subtotal = getTotalCartAmount();
     const deliveryFee = 2;
     const total = subtotal + deliveryFee;
@@ -52,9 +96,8 @@ const PlaceOrder = () => {
       totalAmount: total,
     };
 
-
     try {
-      const response = await axios.post('https://restaurant-backend-flame.vercel.app/api/orders/new', orderData, {
+      const response = await axios.post('http://localhost:3000/api/orders/new', orderData, {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -62,21 +105,18 @@ const PlaceOrder = () => {
 
       if (response.status === 201) {
         console.log('Order placed successfully:', response.data);
-
-        // Clear cart after order is successfully placed
-
         Swal.fire({
           title: "Done!",
           text: "Your Order Placed Successfully!",
           icon: "success"
         });
       } else {
+        toast.error("Failed to place order. Please try again.");
         console.error('Error placing order:', response.data);
-        alert('Failed to place order. Please try again.');
       }
     } catch (error) {
-      console.error('Error placing order:', error.response?.data || error.message);
-      alert('An error occurred while placing the order. Please try again.');
+      toast.error("An error occurred while placing your order. Please try again later.");
+      console.error('Error response:', error);
     }
   };
 
@@ -92,28 +132,34 @@ const PlaceOrder = () => {
           <div className="form-group">
             <label htmlFor="name">Full Name</label>
             <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required />
+            {formErrors.name && <div className="error">{formErrors.name}</div>}
           </div>
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required />
+            {formErrors.email && <div className="error">{formErrors.email}</div>}
           </div>
           <div className="form-group">
             <label htmlFor="street">Street Address</label>
             <input type="text" id="street" name="street" value={formData.street} onChange={handleInputChange} required />
+            {formErrors.street && <div className="error">{formErrors.street}</div>}
           </div>
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="city">City</label>
               <input type="text" id="city" name="city" value={formData.city} onChange={handleInputChange} required />
+              {formErrors.city && <div className="error">{formErrors.city}</div>}
             </div>
             <div className="form-group">
               <label htmlFor="zipCode">ZIP Code</label>
               <input type="text" id="zipCode" name="zipCode" value={formData.zipCode} onChange={handleInputChange} required />
+              {formErrors.zipCode && <div className="error">{formErrors.zipCode}</div>}
             </div>
           </div>
           <div className="form-group">
             <label htmlFor="country">Country</label>
             <input type="text" id="country" name="country" value={formData.country} onChange={handleInputChange} required />
+            {formErrors.country && <div className="error">{formErrors.country}</div>}
           </div>
           <div className="form-group">
             <label>Payment Method</label>
@@ -132,9 +178,9 @@ const PlaceOrder = () => {
         </form>
         <div className="order-summary">
           <h2>Order Summary</h2>
-          <div className="summary-row"><span>Subtotal:</span><span>₹{subtotal.toFixed(2)}</span></div>
-          <div className="summary-row"><span>Delivery Fee:</span><span>₹{deliveryFee.toFixed(2)}</span></div>
-          <div className="summary-row total"><span>Total:</span><span>₹{total.toFixed(2)}</span></div>
+          <div className="summary-row"><span>Subtotal:</span><span>Rs:{subtotal.toFixed(2)}</span></div>
+          <div className="summary-row"><span>Delivery Fee:</span><span>Rs:{deliveryFee.toFixed(2)}</span></div>
+          <div className="summary-row total"><span>Total:</span><span>Rs:{total.toFixed(2)}</span></div>
         </div>
       </div>
     </div>
