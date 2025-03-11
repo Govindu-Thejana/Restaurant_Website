@@ -17,8 +17,8 @@ const mongoURI = process.env.mongoDBURL;
 
 const app = express();
 app.use(cors({
-    origin: "https://restaurantomato.vercel.app", // Explicitly allow your frontend
-    methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'], // Allowed HTTP methods
+    origin: ["https://restaurantomato.vercel.app", "http://localhost:5173"], // Explicitly allow your frontend
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'], // Allowed HTTP methods
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true // Allow credentials (cookies, authorization headers)
 }));
