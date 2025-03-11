@@ -53,6 +53,11 @@ const PlaceOrder = () => {
   };
 
   const handleSubmit = async (e) => {
+    Swal.fire({
+      title: "Done!",
+      text: "Your Order Placed Successfully!",
+      icon: "success"
+    });
     e.preventDefault();
     const validationErrors = validateForm();
 
