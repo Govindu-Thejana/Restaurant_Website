@@ -1,14 +1,18 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './Cart.css';
 import { StoreContext } from '../../context/StoreContext';
 import { FaTrash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { assets } from '../../assets/assets'; // Add this import for the icons
 import { toast } from 'react-toastify';
 
 
 const Cart = () => {
-  const { cartItems, food_list, removeFromCart, addToCart, getTotalCartAmount } = useContext(StoreContext);
+  const { cartItems, addToCart, removeFromCart, getTotalCartAmount } = useContext(StoreContext);
+  const [foods, setFoods] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const url = "https://restaurant-backend-flame.vercel.app";
   const navigate = useNavigate();
 
   const fetchFoods = async () => {
@@ -35,7 +39,6 @@ const Cart = () => {
   }, []);
 
   const deliveryFee = 200;
-
   const subtotal = getTotalCartAmount();
   const total = subtotal + deliveryFee;
 
@@ -60,9 +63,8 @@ const Cart = () => {
             <p>Total</p>
             <p>Action</p>
           </div>
-
-          {food_list.length === 0 || Object.keys(cartItems).length === 0 ? (
-            <p>Your cart is empty</p>
+          {loading ? (
+            <p>Loading...</p>
           ) : (
             <>
               {foods.length === 0 ? (
@@ -106,7 +108,6 @@ const Cart = () => {
                 })
               )}
             </>
-
           )}
         </div>
 
