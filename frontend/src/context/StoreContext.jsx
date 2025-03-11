@@ -9,9 +9,10 @@ const StoreContextProvider = (props) => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('https://restaurant-backend-flame.vercel.app/api/products');
+        const response = await axios.get(`${backendUrl}/api/products/`);
         setProducts(response.data.products);
       } catch (error) {
         console.error('Error fetching products:', error);

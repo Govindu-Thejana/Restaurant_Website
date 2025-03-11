@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './FoodDisplay.css';
 import FoodItem from '../FoodItem/foodItem';
+import { toast } from 'react-toastify';
 import axios from 'axios';
 
 const FoodDisplay = ({ category }) => {
@@ -8,13 +9,15 @@ const FoodDisplay = ({ category }) => {
   const [loading, setLoading] = useState(false);
 
   const fetchFoods = async () => {
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
     setLoading(true);
     try {
-      const response = await axios.get('https://restaurant-backend-flame.vercel.app/api/products/');
-      console.log(response.data.products);
+      const response = await axios.get(`${backendUrl}/api/products/`);
       setFoods(response.data.products);
     } catch (error) {
       console.error("Fetch Error:", error);
+      toast.error("Failed to fetch products");
     } finally {
       setLoading(false);
     }
