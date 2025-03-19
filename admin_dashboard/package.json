@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@babel/runtime": "^7.26.10",
     "@chakra-ui/react": "^3.9.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
@@ -18,7 +19,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.3.0",
-    "react-toastify": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "sweetalert2": "^11.4.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
